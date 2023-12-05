@@ -1,7 +1,6 @@
-﻿
-using MediaFile.Abstraction;
+﻿using PNN.File.Abstraction;
 
-namespace MediaFile.Services;
+namespace PNN.File.Services;
 public class FolderService : IFolderService
 {
 

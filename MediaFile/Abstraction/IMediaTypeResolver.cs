@@ -1,4 +1,4 @@
-﻿namespace MediaFile.Abstraction;
+﻿namespace PNN.File.Abstraction;
 public interface IMediaTypeResolver
 {
 

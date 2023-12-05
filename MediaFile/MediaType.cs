@@ -1,6 +1,4 @@
-﻿
-
-namespace MediaFile;
+﻿namespace PNN.File;
 public class MediaType : IEquatable<MediaType>
 {
 

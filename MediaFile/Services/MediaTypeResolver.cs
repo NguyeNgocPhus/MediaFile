@@ -1,6 +1,6 @@
-﻿using MediaFile.Abstraction;
+﻿using PNN.File.Abstraction;
 
-namespace MediaFile.Services;
+namespace PNN.File.Services;
 public class MediaTypeResolver : IMediaTypeResolver
 {
     public MediaTypeResolver()
@@ -22,7 +22,7 @@ public class MediaTypeResolver : IMediaTypeResolver
             }
             else
             {
-               return GetExtensionMediaTypeMap().Where(x => x.Key == type).Select(x => x.Value);
+                return GetExtensionMediaTypeMap().Where(x => x.Key == type).Select(x => x.Value);
             }
         }
         return extensions;

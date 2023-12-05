@@ -1,6 +1,6 @@
-﻿namespace MediaFile;
+﻿namespace PNN.File;
 
-public class MediaSettings 
+public class MediaSettings
 {
     private readonly HashSet<int> _allowedThumbSizes;
 

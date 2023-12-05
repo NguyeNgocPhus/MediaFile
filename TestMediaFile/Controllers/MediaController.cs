@@ -1,6 +1,6 @@
-using MediaFile.Abstraction;
-using MediaFile.Enums;
 using Microsoft.AspNetCore.Mvc;
+using PNN.File.Abstraction;
+using PNN.File.Enums;
 
 namespace TestMediaFile.Controllers;
 
@@ -8,14 +8,14 @@ namespace TestMediaFile.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class WeatherForecastController : ControllerBase
+public class MediaController : ControllerBase
 {
 
-    private readonly ILogger<WeatherForecastController> _logger;
+    private readonly ILogger<MediaController> _logger;
     private readonly IMediaService _mediaService;
     private readonly IMediaTypeResolver _mediaTypeResolver;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger, IMediaService mediaService, IMediaTypeResolver mediaTypeResolver)
+    public MediaController(ILogger<MediaController> logger, IMediaService mediaService, IMediaTypeResolver mediaTypeResolver)
     {
         _logger = logger;
         _mediaService = mediaService;
@@ -32,8 +32,7 @@ public class WeatherForecastController : ControllerBase
 
         )
     {
-
-
+      
         var numFiles = Request.Form.Files.Count;
         var result = new List<object>(numFiles);
 
@@ -50,7 +49,7 @@ public class WeatherForecastController : ControllerBase
 
                 if(typeFilter !=null && typeFilter.Length > 0)
                 {
-
+                    // validate extension
                     var mediaTypeExtensions = _mediaTypeResolver.ParseTypeFilter(typeFilter);
                     if (!mediaTypeExtensions.Contains(extension))
                     {

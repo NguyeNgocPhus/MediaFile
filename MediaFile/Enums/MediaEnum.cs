@@ -1,4 +1,4 @@
-﻿namespace MediaFile.Enums;
+﻿namespace PNN.File.Enums;
 public enum DuplicateFileHandling
 {
     ThrowError,
