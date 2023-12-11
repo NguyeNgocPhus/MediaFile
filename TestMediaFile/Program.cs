@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using PNN.File.Databases;
+using PNN.File.DependencyInjection.Extensions;
 using PNN.File.DependencyInjection.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddMediaFile();
 builder.Services.AddControllers();
 
 var appDb = builder.Configuration.GetSection("AppDb").Get<AppDbOption>();
@@ -18,6 +19,7 @@ builder.Services.AddPooledDbContextFactory<MediaFileDbContext>(option =>
     }
     ));
 });
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();

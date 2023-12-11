@@ -10,7 +10,8 @@ public static class AddMediaServiceExtension
         services.AddScoped<IMediaService, MediaFileService>();
         services.AddScoped<IFolderService, FolderService>();
         services.AddScoped<IMediaTypeResolver, MediaTypeResolver>();
-
+        services.AddScoped<MediaHelper>();
+        services.AddScoped<IMediaUrlGenerator, MediaUrlGenerator>();
         return services;
     }
 }

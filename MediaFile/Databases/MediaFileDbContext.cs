@@ -1,5 +1,5 @@
-﻿using MediaFile.Databases.Configurations;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using PNN.File.Databases.Configurations;
 using PNN.File.Domain;
 
 namespace PNN.File.Databases;

@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMediaFile", "TestMediaFile\TestMediaFile.csproj", "{42DBD523-0410-4511-9A95-1A51FCBC3179}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{699FB5B6-1D43-4349-9BF8-0A4FE1A1F64C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{42DBD523-0410-4511-9A95-1A51FCBC3179}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42DBD523-0410-4511-9A95-1A51FCBC3179}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42DBD523-0410-4511-9A95-1A51FCBC3179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{699FB5B6-1D43-4349-9BF8-0A4FE1A1F64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{699FB5B6-1D43-4349-9BF8-0A4FE1A1F64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{699FB5B6-1D43-4349-9BF8-0A4FE1A1F64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{699FB5B6-1D43-4349-9BF8-0A4FE1A1F64C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +42,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1E98A170-78C8-4A74-92C2-73DDAF0EA68D} = {FF007211-F8D5-452A-8ABA-05928D394CE8}
 		{42DBD523-0410-4511-9A95-1A51FCBC3179} = {FF007211-F8D5-452A-8ABA-05928D394CE8}
+		{699FB5B6-1D43-4349-9BF8-0A4FE1A1F64C} = {FF007211-F8D5-452A-8ABA-05928D394CE8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2AC61A85-9098-45CD-AB78-CA49365AF47E}

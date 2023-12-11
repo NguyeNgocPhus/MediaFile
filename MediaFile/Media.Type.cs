@@ -6,7 +6,7 @@ public class MediaType : IEquatable<MediaType>
     {
         ["image"] = new[] { "png", "jpg", "jpeg", "jfif", "gif", "webp", "bmp", "svg", "ico" },
         ["video"] = new[] { "mp4", "m4v", "mkv", "wmv", "avi", "asf", "mpg", "mpeg", "webm", "flv", "ogv", "mov", "3gp" },
-        ["audio"] = new[] { "mp3", "wav", "wma", "aac", "flac", "oga", "wav", "m4a", "ogg" },
+        ["audio"] = new[] { "mp3", "wav", "wma", "aac", "flac", "oga", "m4a", "ogg" },
         ["document"] = new[] { "pdf", "doc", "docx", "ppt", "pptx", "pps", "ppsx", "docm", "odt", "ods", "dot", "dotx", "dotm", "psd", "xls", "xlsx", "rtf" },
         ["text"] = new[] { "txt", "xml", "csv", "htm", "html", "json", "css", "js" },
         ["bin"] = Array.Empty<string>()

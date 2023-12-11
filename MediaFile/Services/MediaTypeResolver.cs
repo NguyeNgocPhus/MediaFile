@@ -22,7 +22,7 @@ public class MediaTypeResolver : IMediaTypeResolver
             }
             else
             {
-                return GetExtensionMediaTypeMap().Where(x => x.Key == type).Select(x => x.Value);
+                return GetExtensionMediaTypeMap().Where(x => x.Value == type).Select(x => x.Key);
             }
         }
         return extensions;
@@ -43,7 +43,7 @@ public class MediaTypeResolver : IMediaTypeResolver
 
             foreach (var ext in media.DefaultExtensions)
             {
-                map[media.Name] = ext;
+                map.Add( ext, media.Name);
             }
         }
 

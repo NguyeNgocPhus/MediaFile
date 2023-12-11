@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PNN.File;
-internal class MediaFileInfo
+internal class TreeNode
 {
 }
