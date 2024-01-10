@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using PNN.File.Databases;
 using PNN.File.DependencyInjection.Extensions;
 using PNN.File.DependencyInjection.Options;
+using PNN.File.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,14 +26,32 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 
+// Configure the HTTP request pipeline.
+app.UseRouting();
 app.UseAuthorization();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+app.UseEndpoints(e =>
+{
+    e.Map("/task", () =>
+    {
+        return "xin chao";
+    }).WithMetadata(new HttpMethodMetadata(new[] { "GET", "POST" })).WithDisplayName("Task scheduler");
+});
+
+app.UseWhen((HttpContext ctx) =>
+{
+    return true;
+}, (IApplicationBuilder app) =>
+{
+    app.UseMiddleware<MediaFileMidleware>();
+});
 
 app.MapControllers();
 

@@ -1,21 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Drawing;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using PNN.File.Abstraction;
 using PNN.File.Databases;
-using PNN.File.Domain;
 using PNN.File.Enums;
+using System.IO;
 
 namespace PNN.File.Services;
 public class MediaFileService : IMediaService
 {
     private readonly IFolderService _folderService;
     private readonly MediaHelper _helper;
-//    private readonly MediaFileDbContext _db;
+    private readonly MediaFileDbContext _db;
+    private readonly IMediaStorageProvider _storageProvider;
+    private readonly FileExtensionContentTypeProvider _contentTypeProvider = new FileExtensionContentTypeProvider();
 
-    public MediaFileService(IFolderService folderService, MediaHelper helper)
+    public MediaFileService(IFolderService folderService, MediaHelper helper, MediaFileDbContext db, IMediaStorageProvider storageProvider)
     {
         _folderService = folderService;
         _helper = helper;
-       // _db = db;
+        _db = db;
+        _storageProvider = storageProvider;
     }
 
     public string CombinePaths(params string[] paths)
@@ -26,14 +31,34 @@ public class MediaFileService : IMediaService
     public async Task<Domain.MediaFile> SaveFileAsync(string path, Stream stream, bool isTransient = true, DuplicateFileHandling duplicateFileHandling = DuplicateFileHandling.ThrowError)
     {
 
-        var pathData = CreatePath(path);
-       // var file = await _db.MediaFiles.FirstOrDefaultAsync(x => x.Name == pathData.Name && x.FolderId == pathData.Id);
-        //var idDupe = file != null;
-        //var result = new ProcessFileAsync();
+        var pathData = CreatePathData(path);
+        var file = await _db.MediaFiles.FirstOrDefaultAsync(x => x.Name == pathData.FileName);
+        var idDupe = file != null;
+
+        var result = await ProcessFileAsync(file, pathData, stream, dupeFileHandling: duplicateFileHandling);
+        file = result.File;
+
+        if (file.Id == 0)
+        {
+            _db.MediaFiles.Add(file);
+        }
+        try
+        {
+
+            //await _db.SaveChangesAsync();
+            await _storageProvider.SaveAsync(file, result.Image);
+
+        }
+        catch (Exception ex)
+        {
+
+
+        }
+
 
         return new Domain.MediaFile();
     }
-    private MediaFolder CreatePath(string path)
+    private MediaPathData CreatePathData(string path)
     {
 
         if (!_helper.TokenizePath(path, true))
@@ -41,29 +66,79 @@ public class MediaFileService : IMediaService
             throw new ArgumentException("path is not valid", nameof(path));
         }
 
-        return new MediaFolder();
+        
+
+
+        _ = _contentTypeProvider.TryGetContentType(path, out var mineType);
+        var pathData = new MediaPathData()
+        {
+            Extension = Path.GetExtension(path),
+            FileName = Path.GetFileName(path),
+            FileTitle = Path.GetFileNameWithoutExtension(path),
+            MimeType = mineType
+        };
+
+       
+        return pathData;
     }
-    private Domain.MediaFile ProcessFileAsync(
-        Domain.MediaFile file, 
-        MediaFolder pathData, 
-        //Stream inStream, 
-        //HashSet<string> destFileNames = null,
-        //bool isTransient = true,
+    private async Task<(IImage Image, Domain.MediaFile File)> ProcessFileAsync(
+        Domain.MediaFile file,
+        MediaPathData pathData,
+        Stream inStream,
         DuplicateFileHandling dupeFileHandling = DuplicateFileHandling.ThrowError
-       // MimeValidationType mediaValidationType = MimeValidationType.MimeTypeMustMatch
+
         )
     {
-
-        if(file != null)
+        if (file != null)
         {
             var madeUniqueFileName = dupeFileHandling == DuplicateFileHandling.Overwrite ? false : true;
 
-            if(dupeFileHandling == DuplicateFileHandling.ThrowError)
+            if (dupeFileHandling == DuplicateFileHandling.ThrowError)
             {
-                var fullPath = pathData.IncludePath;
+                var fullPath = pathData.FullPath;
 
+                throw new Exception(fullPath);
             }
         }
-        return file;
+        file ??= new Domain.MediaFile()
+        {
+
+        };
+        file.Name = pathData.FileName;
+        file.Extension = pathData.Extension;
+        file.MimeType = pathData.MimeType;
+
+
+        //&& file.MediaType == MediaType.Image
+        if (inStream != null && inStream.Length > 0 )
+        {
+            var image = await ProcessImage(file, inStream);
+            file.Width = image.Width;
+            file.Height = image.Height;
+            file.Size = image.InStream.Length;
+
+            return (image, file);
+        }
+        else
+        {
+            throw new Exception();
+        }
+    }
+    private async Task<IImage> ProcessImage(Domain.MediaFile file, Stream inStream)
+    {
+
+        var originalSize = Size.Empty;
+
+        var maxSize = 1024;
+        var extension = file.Extension;
+        IImage outImage;
+
+        if (originalSize.IsEmpty || originalSize.Width <= maxSize && originalSize.Height <= maxSize)
+        {
+            outImage = new ImageWrapper(inStream, originalSize);
+            return outImage;
+        }
+        return new ImageWrapper();
+
     }
 }

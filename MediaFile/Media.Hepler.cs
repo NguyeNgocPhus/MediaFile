@@ -11,10 +11,11 @@ public class MediaHelper
     {
         _folderService = folderService;
     }
-    public bool TokenizePath(string path, bool normalizeName = true)
+    public bool TokenizePath(string path, bool normalizeName)
     {
         dynamic data = null;
         var normalizeNam1e = normalizeName;
+        
         if (path == null)
         {
             return false;

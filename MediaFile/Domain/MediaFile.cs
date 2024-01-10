@@ -6,7 +6,8 @@ public class MediaFile
     public string Name { get; set; }
     public string Extension { get; set; }
     public string MimeType { get; set; }
-    public int Size { get; set; }
+    public string MediaType { get; set; }
+    public long Size { get; set; }
     public int FixedSize { get; set; }
     public string MetaData { get; set; }
     public int Width { get; set; }

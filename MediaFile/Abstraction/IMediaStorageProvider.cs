@@ -32,7 +32,7 @@ public interface IMediaStorageProvider
     /// </summary>
     /// <param name="mediaFile">Media file item</param>
     /// <param name="item">The source item</param>
-    //Task SaveAsync(Domain.MediaFile mediaFile, MediaStorageItem? item);
+    Task SaveAsync(Domain.MediaFile mediaFile, IImage item);
 
     /// <summary>
     /// Remove media storage item(s)

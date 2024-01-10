@@ -43,7 +43,7 @@ public class MediaTypeResolver : IMediaTypeResolver
 
             foreach (var ext in media.DefaultExtensions)
             {
-                map.Add( ext, media.Name);
+                map.Add(ext, media.Name);
             }
         }
 

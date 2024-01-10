@@ -32,7 +32,8 @@ public class MediaType : IEquatable<MediaType>
     public string[] DefaultExtensions { get; private set; }
     public static IEnumerable<string> AllExtensions => _defaultExtensionsMap.Select(x => x.Key);
     public override string ToString() => Name;
-
+    public static implicit operator string(MediaType obj)
+           => obj?.Name;
     public static MediaType GetMediaType(string name)
     {
         if (name == null)
