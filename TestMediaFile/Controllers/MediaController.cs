@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PNN.File.Abstraction;
 using PNN.File.Databases;
-using PNN.File.Domain;
 using PNN.File.Enums;
 using PNN.Identity.Abstraction;
+using PNN.Identity.Securities.Authorization;
 
 namespace TestMediaFile.Controllers;
 
@@ -29,6 +29,8 @@ public class MediaController : ControllerBase
         _mediaFileDbContext = mediaFileDbContext;
         _identityService = identityService;
     }
+
+    [Permissions(Permissions = new[] { "weather:*:*" })]
     [HttpPost]
     public async Task<IActionResult> GetFile()
     {

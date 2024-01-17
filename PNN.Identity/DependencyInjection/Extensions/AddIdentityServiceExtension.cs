@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
-using Microsoft.AspNetCore.Authentication;
 using PNN.Identity.Services;
 using PNN.Identity.Abstraction;
+using Microsoft.AspNetCore.Authorization;
+using PNN.Identity.Securities.Authorization.Handlers;
+using PNN.Identity.Securities.Authorization.PolicyProviders;
 
 
 namespace PNN.Identity.DependencyInjection.Extensions;
@@ -115,8 +116,15 @@ public static class AddIdentityServiceExtension
         .AddScheme<SimpleAuthenticationOptions, SimpleAuthenticationHandler>(SimpleAuthenticationOptions.DefaultScheme, options =>
         {
         });
+
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionsPolicyProvider>();
+        services.AddSingleton<IAuthorizationHandler, PermissionsAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationHandler, RolesAuthorizationHandler>();
+        services.AddSingleton<IAuthorizationHandler, ScopesAuthorizationHandler>();
+
         services.AddHttpContextAccessor();
         services.AddScoped<IIdentityService, SimpleIdentityService>();
+        //services.AddAuthorization(option => { option.AddPolicy("AdminOnly", policy => policy.Requirements.Add(new MinimumAgeRequirement(0))); });
         return services;
     }
     public static IApplicationBuilder UseIdentity(this IApplicationBuilder app)
