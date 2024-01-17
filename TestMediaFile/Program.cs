@@ -4,12 +4,15 @@ using PNN.File.Databases;
 using PNN.File.DependencyInjection.Extensions;
 using PNN.File.DependencyInjection.Options;
 using PNN.File.Middlewares;
+using PNN.Identity.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddMediaFile();
 builder.Services.AddControllers();
+
+builder.Services.AddSimpleIdentity(builder.Configuration);
 
 var appDb = builder.Configuration.GetSection("AppDb").Get<AppDbOption>();
 builder.Services.AddPooledDbContextFactory<MediaFileDbContext>(option =>
@@ -24,12 +27,15 @@ builder.Services.AddPooledDbContextFactory<MediaFileDbContext>(option =>
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddSwaggerGen();
 
+
+
 var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
 app.UseRouting();
-app.UseAuthorization();
+
+app.UseIdentity();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -37,21 +43,13 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseEndpoints(e =>
-{
-    e.Map("/task", () =>
-    {
-        return "xin chao";
-    }).WithMetadata(new HttpMethodMetadata(new[] { "GET", "POST" })).WithDisplayName("Task scheduler");
-});
-
-app.UseWhen((HttpContext ctx) =>
-{
-    return true;
-}, (IApplicationBuilder app) =>
-{
-    app.UseMiddleware<MediaFileMidleware>();
-});
+//app.UseWhen((HttpContext ctx) =>
+//{
+//    return true;
+//}, (IApplicationBuilder app) =>
+//{
+//    app.UseMiddleware<MediaFileMidleware>();
+//});
 
 app.MapControllers();
 

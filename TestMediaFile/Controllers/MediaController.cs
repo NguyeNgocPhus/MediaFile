@@ -1,14 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PNN.File.Abstraction;
 using PNN.File.Databases;
 using PNN.File.Domain;
 using PNN.File.Enums;
+using PNN.Identity.Abstraction;
 
 namespace TestMediaFile.Controllers;
 
 
-
+[Authorize]
 [ApiController]
 [Route("[controller]/[action]")]
 public class MediaController : ControllerBase
@@ -18,16 +20,20 @@ public class MediaController : ControllerBase
     private readonly IMediaService _mediaService;
     private readonly IMediaTypeResolver _mediaTypeResolver;
     private readonly MediaFileDbContext _mediaFileDbContext;
-    public MediaController(ILogger<MediaController> logger, IMediaService mediaService, IMediaTypeResolver mediaTypeResolver, MediaFileDbContext mediaFileDbContext)
+    private readonly IIdentityService _identityService;
+    public MediaController(ILogger<MediaController> logger, IMediaService mediaService, IMediaTypeResolver mediaTypeResolver, MediaFileDbContext mediaFileDbContext, IIdentityService identityService)
     {
         _logger = logger;
         _mediaService = mediaService;
         _mediaTypeResolver = mediaTypeResolver;
         _mediaFileDbContext = mediaFileDbContext;
+        _identityService = identityService;
     }
     [HttpPost]
     public async Task<IActionResult> GetFile()
     {
+        var a = _identityService.GetToken<int>();
+        var b = _identityService.GenerateToken<int, int>(123);
         return Ok("haloo");
     }
     [HttpPost]
@@ -66,7 +72,7 @@ public class MediaController : ControllerBase
                 }
 
                 var mediaFile = await _mediaService.SaveFileAsync(filePath, uploadFile.OpenReadStream(), isTransient, duplicateFileHandling);
-              
+
 
             }
             catch (Exception ex)
