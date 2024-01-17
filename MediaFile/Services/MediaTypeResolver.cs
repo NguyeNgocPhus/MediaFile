@@ -48,4 +48,12 @@ public class MediaTypeResolver : IMediaTypeResolver
         }
 
     }
+
+    public string GetMediaType(string extension)
+    {
+        var extensions = GetExtensionMediaTypeMap();
+
+        var ext = extensions.FirstOrDefault(x => x.Key == extension);
+        return ext.Value;
+    }
 }

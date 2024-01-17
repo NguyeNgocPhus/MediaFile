@@ -14,12 +14,12 @@ public class MediaType : IEquatable<MediaType>
 
     private readonly static IDictionary<string, MediaType> _map = new Dictionary<string, MediaType>(StringComparer.OrdinalIgnoreCase);
 
-    public readonly static MediaType Image = new("image", _defaultExtensionsMap["image"]);
-    public readonly static MediaType Video = new("video", _defaultExtensionsMap["video"]);
-    public readonly static MediaType Audio = new("audio", _defaultExtensionsMap["audio"]);
-    public readonly static MediaType Document = new("document", _defaultExtensionsMap["document"]);
-    public readonly static MediaType Text = new("text", _defaultExtensionsMap["text"]);
-    public readonly static MediaType Binary = new("bin", _defaultExtensionsMap["bin"]);
+    public readonly static MediaType Image = new MediaType("image", _defaultExtensionsMap["image"]);
+    public readonly static MediaType Video = new MediaType ("video", _defaultExtensionsMap["video"]);
+    public readonly static MediaType Audio = new MediaType("audio", _defaultExtensionsMap["audio"]);
+    public readonly static MediaType Document = new MediaType("document", _defaultExtensionsMap["document"]);
+    public readonly static MediaType Text = new MediaType("text", _defaultExtensionsMap["text"]);
+    public readonly static MediaType Binary = new MediaType("bin", _defaultExtensionsMap["bin"]);
 
     public MediaType(string name, params string[] defaultsExtension)
     {

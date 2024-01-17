@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TextFile1.txt = TextFile1.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMediaFile", "TestMediaFile\TestMediaFile.csproj", "{42DBD523-0410-4511-9A95-1A51FCBC3179}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PNN", "TestMediaFile\PNN.csproj", "{42DBD523-0410-4511-9A95-1A51FCBC3179}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{699FB5B6-1D43-4349-9BF8-0A4FE1A1F64C}"
 EndProject

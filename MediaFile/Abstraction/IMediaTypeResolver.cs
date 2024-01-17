@@ -8,4 +8,6 @@ public interface IMediaTypeResolver
     /// <param name="typeFilter">A list of either file extensions and/or media type names, e.g.: [ "image", ".mp4", "audio", ".pdf" ]. Extensions must start with a dot.</param>
     /// <returns>All suitable file extensions.</returns>
     IEnumerable<string> ParseTypeFilter(string[] typeFilter);
+
+    string GetMediaType(string mediaType);
 }

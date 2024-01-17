@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PNN.File.Abstraction;
 using PNN.File.Databases;
+using PNN.File.Domain;
 using PNN.File.Enums;
 
 namespace TestMediaFile.Controllers;
@@ -63,12 +64,9 @@ public class MediaController : ControllerBase
 
                     }
                 }
-                else
-                {
-
-                }
 
                 var mediaFile = await _mediaService.SaveFileAsync(filePath, uploadFile.OpenReadStream(), isTransient, duplicateFileHandling);
+              
 
             }
             catch (Exception ex)
@@ -77,7 +75,7 @@ public class MediaController : ControllerBase
             }
 
         }
-        return Ok();
+        return Ok("ok");
 
     }
 }

@@ -11,16 +11,18 @@ public class MediaFileService : IMediaService
 {
     private readonly IFolderService _folderService;
     private readonly MediaHelper _helper;
+    private readonly IMediaTypeResolver _mediaTypeResolver;
     private readonly MediaFileDbContext _db;
     private readonly IMediaStorageProvider _storageProvider;
     private readonly FileExtensionContentTypeProvider _contentTypeProvider = new FileExtensionContentTypeProvider();
 
-    public MediaFileService(IFolderService folderService, MediaHelper helper, MediaFileDbContext db, IMediaStorageProvider storageProvider)
+    public MediaFileService(IFolderService folderService, MediaHelper helper, MediaFileDbContext db, IMediaStorageProvider storageProvider, IMediaTypeResolver mediaTypeResolver)
     {
         _folderService = folderService;
         _helper = helper;
         _db = db;
         _storageProvider = storageProvider;
+        _mediaTypeResolver = mediaTypeResolver;
     }
 
     public string CombinePaths(params string[] paths)
@@ -37,7 +39,8 @@ public class MediaFileService : IMediaService
 
         var result = await ProcessFileAsync(file, pathData, stream, dupeFileHandling: duplicateFileHandling);
         file = result.File;
-
+        file.CreatedAt = DateTimeOffset.UtcNow;
+        file.UpdatedAt = DateTimeOffset.UtcNow;
         if (file.Id == 0)
         {
             _db.MediaFiles.Add(file);
@@ -45,7 +48,7 @@ public class MediaFileService : IMediaService
         try
         {
 
-            //await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
             await _storageProvider.SaveAsync(file, result.Image);
 
         }
@@ -66,13 +69,10 @@ public class MediaFileService : IMediaService
             throw new ArgumentException("path is not valid", nameof(path));
         }
 
-        
-
-
         _ = _contentTypeProvider.TryGetContentType(path, out var mineType);
         var pathData = new MediaPathData()
         {
-            Extension = Path.GetExtension(path),
+            Extension = Path.GetExtension(path)[1..],
             FileName = Path.GetFileName(path),
             FileTitle = Path.GetFileNameWithoutExtension(path),
             MimeType = mineType
@@ -91,8 +91,6 @@ public class MediaFileService : IMediaService
     {
         if (file != null)
         {
-            var madeUniqueFileName = dupeFileHandling == DuplicateFileHandling.Overwrite ? false : true;
-
             if (dupeFileHandling == DuplicateFileHandling.ThrowError)
             {
                 var fullPath = pathData.FullPath;
@@ -108,9 +106,10 @@ public class MediaFileService : IMediaService
         file.Extension = pathData.Extension;
         file.MimeType = pathData.MimeType;
 
+        file.MediaType = _mediaTypeResolver.GetMediaType(file.Extension);
 
         //&& file.MediaType == MediaType.Image
-        if (inStream != null && inStream.Length > 0 )
+        if (inStream != null && inStream.Length > 0 && file.MediaType == MediaType.Image)
         {
             var image = await ProcessImage(file, inStream);
             file.Width = image.Width;
@@ -130,7 +129,8 @@ public class MediaFileService : IMediaService
         var originalSize = Size.Empty;
 
         var maxSize = 1024;
-        var extension = file.Extension;
+
+        _ = file.Extension;
         IImage outImage;
 
         if (originalSize.IsEmpty || originalSize.Width <= maxSize && originalSize.Height <= maxSize)
