@@ -24,6 +24,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\MediaFile\PNN.File.csproj" />
+	  <ProjectReference Include="..\PNN.File\PNN.File.csproj" />
 	  <ProjectReference Include="..\PNN.Identity\PNN.Identity.csproj" />
 	</ItemGroup>
 </Project>

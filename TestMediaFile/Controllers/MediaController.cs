@@ -10,7 +10,6 @@ using PNN.Identity.Securities.Authorization;
 namespace TestMediaFile.Controllers;
 
 
-[Authorize]
 [ApiController]
 [Route("[controller]/[action]")]
 public class MediaController : ControllerBase
@@ -30,7 +29,7 @@ public class MediaController : ControllerBase
         _identityService = identityService;
     }
 
-    [Permissions(Permissions = new[] { "weather:*:*" })]
+    [Permissions]
     [HttpPost]
     public async Task<IActionResult> GetFile()
     {

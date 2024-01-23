@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using PNN.File.Databases;
 using PNN.File.DependencyInjection.Extensions;
 using PNN.File.DependencyInjection.Options;
-using PNN.File.Middlewares;
 using PNN.Identity.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

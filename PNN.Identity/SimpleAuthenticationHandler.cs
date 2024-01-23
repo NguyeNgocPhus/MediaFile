@@ -15,14 +15,14 @@ internal class SimpleAuthenticationHandler : AuthenticationHandler<SimpleAuthent
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         //check header first
-        if (!Request.Headers
+        if (!Request.Cookies
             .ContainsKey(Options.TokenHeaderName))
         {
             return AuthenticateResult.Fail($"Missing header: {Options.TokenHeaderName}");
         }
         //get the header and validate
         string token = Request
-            .Headers[Options.TokenHeaderName]!;
+            .Cookies[Options.TokenHeaderName]!;
 
         //usually, this is where you decrypt a token and/or lookup a database.
         //if (token != "phunnn")

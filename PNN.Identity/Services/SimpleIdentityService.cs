@@ -29,7 +29,7 @@ public class SimpleIdentityService : IIdentityService
     {
         var request = _httpContextAccessor?.HttpContext?.Request;
 
-        if (request != null && request.Headers.TryGetValue(SimpleAuthenticationOptions.DefaultTokenHeader, out var value) && !string.IsNullOrEmpty(value))
+        if (request != null && request.Cookies.TryGetValue(SimpleAuthenticationOptions.DefaultTokenHeader, out var value) && !string.IsNullOrEmpty(value))
         {
             return JsonConvert.DeserializeObject<T>(value.ToString());
         }
