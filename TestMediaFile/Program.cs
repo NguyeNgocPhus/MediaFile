@@ -26,13 +26,13 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 builder.Services.AddSwaggerGen();
 
 
-
 var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
 app.UseRouting();
-
+app.UseStaticFiles();
+app.UseMediaFile();
 app.UseIdentity();
 if (app.Environment.IsDevelopment())
 {
