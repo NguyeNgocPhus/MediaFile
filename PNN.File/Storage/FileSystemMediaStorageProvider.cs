@@ -16,7 +16,8 @@ public class FileSystemMediaStorageProvider : IMediaStorageProvider
     {
         var ext = mediaFile.Extension;
         var fileName = mediaFile.Id.ToString();
-        return $"D:\\leader\\LearnToLeader\\MediaFile\\App_data\\{mediaFile.Name}";
+        var path = Path.Combine("App_data", $"{fileName}.{ext}");
+        return path;
     }
     public Task ChangeExtensionAsync(Domain.MediaFile mediaFile, string extension)
     {

@@ -1,0 +1,249 @@
+Tiêu chí tối thiểu của bất kì phần mềm cần đạt được là sau, release ngày một dễ hơn nhanh hơn và khả năng tích hợp mở rộng với hệ thống khác tốt hơn.
+Một project tối thiểu cần đáp ứng được 2 yêu cầu sau:
+	- Khả năng mở rộng về mặt nghiệp vụ:
+		+ Khi cần thích hợp với hệ thống khác để mở rộng nghiệp vụ thì tích hợp vào đâu.
+		+ Nghiệp vụ cần được tập trung để có thể quản lý tốt hơn và trách developer mới join làm sai một nghiệp vụ nào đó => Đó là lý do Domain Deriven Design ra đời.
+		...
+	- Khả năng mở rộng về mặt hiệu năng:
+		+ Để mở rộng về mặt hiệu nặng thì không thể sử dụng 1 công nghệ cho toàn bộ chức năng.
+		+ Không thể chỉ trả về một kết quả (JSON) vì phải tích hợp với các công nghệ khác.
+		
+Project hiện tại chưa đáp ứng được 2 tiêu chí quan trọng trêb và đồng thời có thêm một vài điểm yếu sau:
+	- Chưa setup versioning cho api cũng như structure code chưa đáp ứng được điều đó.
+	- Chưa apply SOLID principle => Khó code trong lúc phát triển, khó maintain cũng như khó viết unit Test.
+	- Chưa đáp ứng được khả năng mở rộng về nghiệp vụ, nếu tích hợp thêm 1 external giống như (SendMail, Cache Redis, MongoDB, ElastichSearch, RabbitMQ ...) chưa có chỗ để tích hợp.
+	- Chưa có Coding Convention và Naming Convention nên khi project mở rộng sẽ không đảm bảo được chất lượng sản phẩm.
+	- Để đáp ứng được hiệu năng cũng như có thể tận dụng được resource utilization thì phải force tất cả devloper phải apply ASYNCHRONOUS PROGRAMING => Project hiện tại chưa đáp ứng được.
+	- Để đáp ứng tốt về mặt hiệu năng cũng như khả năng mở rộng nên apply Clean Achitecture (https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+	- Chưa apply CQRS pattern => Để đáp ứng được khả năng mở rộng về mặt hiệu năng thì giữa QuerySide và ReadSide không nên chung 1 database hoặc chung database thì không nên chung 1 công nghệ.
+	(ex: Trong một hệ thống normal mọi touching point đều liên quan tới query sản phẩm nhiều hơn là persist data...)
+		+ TH1: Nếu tách database thì suggest: 
+			+ SQL cho WriteSide"
+				'Mục tiêu chính của WriteSide là phải consistency, và entity framework là 1 công nghệ xử lý tốt với các database quan hệ, điểm mạnh nhất entity framework là có thể tracking...'
+			+ MongoDB cho ReadSide
+				'Mục tiêu chính của ReadSide là phải query nhanh đáp ứng được performance'
+			+ Điểm yếu: Đáp ứng được performance đáp ứng được hiệu nặng thì khó khăn trong việc consistency giữa 2 database 'SQL Server ' và 'MongoDB' => So với developer chưa có nhiều kinh nghiệm sẽ khó trong implement thời gian đầu vì phải apply MessageBus (ex: RabbitMQ) để luân chuyển message giữa WriteSide và ReadSide.
+			
+		+ TH2: Không tách database (Chỉ dùng SQL Server) thì suggest:
+			+ Entity Framework cho WriteSide để đáp ứng được consistency 
+			+ Dapper cho write side để cải thiện được performance
+			+ Điểm yếu: Dapper cho được performance tốt hơn rất nhiều nhưng phải viết raw query thì sẽ khó trong việc management và maintance (YÊU CẦU ANH EM PHẢI STYDY VỀ RAW QUERY NHIỀU HƠN - CÁI NÀY DỄ TRIỂN KHAI HƠN SO VỚI VIỆC CONSISTENCE GIỮA 2 DATABASE)
+	- Structure Code hiện tại (Code Smells) quá nhiều, Nên xóa using khi không sử dụng cũng như những properties không sử dụng
+	- Chưa apply Global Exception Handler
+	- Chưa có result common, paging common... can not reuse source code
+	...
+	...
+	...
+
+Suggest Structure Code: (In case use only one database)
+	Technology:
+		+ SQL Server for Database
+		+ Entity Framework for Wrtire Side
+		+ Dapper for ReadSide
+		+ MediatR để apply CQRS pattern (Command Query Responsibility Segregation)
+		+ FluentValidation for valid data
+		+ JWT for Authentication
+		+ Format response api JSON and XML
+		+ Repository and Unit of Work pattern
+		+ Use Minimal Api to achieve good performance and flexible
+		
+		+ ref: (Use Outbox pattern and Idempotence pattern in case seprate database)
+		
+		+ Apply Clean Architecture : Can reference at like to see the benifit why we should apply clean architechture https://github.com/edinSahbaz/clean-api-template
+		.....
+		
+Structure Code Standard for reference:
+
+Solution/
+├── Solution items/
+│   ├── .editorconfig
+│   ├── Directory.Build.props
+│   ├── README.md
+│   └── .gitignore
+├── src -->'Source code'/
+│   ├── API --> 'Expose apis for application'/
+│   │   ├── (ref: Application-Infrastructure--Persistence-Presentation)
+│   │   └── Folders/
+│   │       ├── Abstractions
+│   │       └── DependencyInjection/
+│   │           ├── Extensions
+│   │           └── Options
+│   ├
+│   ├── Application --> 'Handler usercase using mediatR library'/
+│   │   ├── (ref: Domain) => User Repository interface at domainlayer
+│   │   └── Folders/
+│   │       ├── Abstractions
+│   │       ├── Behaviors
+│   │       ├── DependencyInjection/
+│   │       │   ├── Extensions
+│   │       │   └── Options
+│   │       └── UserCases/
+│   │           ├── V1/
+│   │           │   ├── Commands/
+│   │           │   │   ├── Account
+│   │           │   │   ├── Identity
+│   │           │   │   ├── Catalog
+│   │           │   │   ├── Communication
+│   │           │   │   ├── Customer
+│   │           │   │   ├── Order
+│   │           │   │   ├── Inventory
+│   │           │   │   └── ...
+│   │           │   └── Queries/
+│   │           │       ├── Account
+│   │           │       ├── Identity
+│   │           │       ├── Catalog
+│   │           │       ├── Communication
+│   │           │       ├── Customer
+│   │           │       ├── Order
+│   │           │       ├── Inventory
+│   │           │       └── ...
+│   │           ├── V2
+│   │           └── ...
+│   ├
+│   ├── Domain --> 'Store entity and bussiness logic -> Core application'/
+│   │   ├── (ref: None)
+│   │   └── Folders/
+│   │       ├── Abstractions/
+│   │       │   ├── IDomainEvent.cs
+│   │       │   ├── IMessage.cs
+│   │       │   ├── Aggregates/
+│   │       │   │   ├── IAggregateRoot : IEntity
+│   │       │   │   └── abstract class AggregateRoot<TValidator> : Entity<TValidator>, IAggregateRoot
+│   │       │   ├── Entities/
+│   │       │   │   ├── IEntity.cs
+│   │       │   │   └── abstract class Entity<TValidator> : IEntity
+│   │       │   └── Repositories --> Interface
+│   │       ├── Aggregates
+│   │       ├── Entities/
+│   │       │   ├── Profiles
+│   │       │   ├── Addresses
+│   │       │   ├── CatalogItems
+│   │       │   ├── OrderItems
+│   │       │   ├── PaymentMethods
+│   │       │   ├── CartItems
+│   │       │   ├── InventoryItems
+│   │       │   └── ...
+│   │       ├── Enumerations
+│   │       └── ValueObject/
+│   │           ├── Product(string Description, string Name, string Brand, string Category, string Unit, string Sku)
+│   │           ├── Currency(string IsoCode, string Symbol, int DecimalPlaces, string Name, string Country, string CultureInfo)
+│   │           ├── Money(decimal Amount, Currency Currency)
+│   │           ├── Email(string Address, string Subject, string Body)
+│   │           └── Address(string Street, string City, string State, string ZipCode, string Country, int? Number, string? Complement)
+│   ├
+│   ├── Infrastructure --> 'Integration with external likes Job, email, provider token ...'/
+│   │   ├── (ref: Application-Persistence)
+│   │   └── Folders/
+│   │       ├── Abstractions
+│   │       ├── Authentication
+│   │       ├── BackgroundJobs/
+│   │       │   └── ProcessOutboxMessagesJob.cs
+│   │       ├── DependencyInjection/
+│   │       │   ├── Extensions
+│   │       │   └── Options
+│   │       └── EmailService
+│   ├
+│   ├── Infrastructure.MessageBus --> 'Working with rabbitMQ: Consume Command and Event'/
+│   │   ├── (ref: Application)
+│   │   └── Folders/
+│   │       ├── Abstractions
+│   │       ├── Consumers/
+│   │       │   ├── Commands
+│   │       │   └── Events
+│   │       ├── DependencyInjection/
+│   │       │   ├── Extensions
+│   │       │   └── Options
+│   │       ├── PipeFilters
+│   │       └── PipeObservers
+│   ├
+│   ├── Persistance | Infrastructure.EF --> 'Working with database'/
+│   │   ├── (ref: Domain)
+│   │   └── Fodlers/
+│   │       ├── Configurations
+│   │       ├── Constants/
+│   │       │   └── TableNames.cs
+│   │       ├── Infrastructure/
+│   │       │   └── PrivateResolver.cs
+│   │       ├── Interceptors/
+│   │       │   ├── ConvertDomainEventsToOutboxMessagesInterceptor.cs
+│   │       │   └── UpdateAuditableEntitiesInterceptor.cs
+│   │       ├── Migrations
+│   │       ├── Outbox/
+│   │       │   └── OutboxMessage.cs
+│   │       ├── Repositories
+│   │       ├── ApplicationDbContext.cs
+│   │       └── UnitOfWork.cs
+│   ├
+│   ├── Infrastructure.Mongo
+│   ├── (ref: Domain)
+│   ├── Folders/
+│   │   ├── Abstractions/
+│   │   │   ├── IMongoDbContext.cs
+│   │   │   └── MongoDbContext.cs
+│   │   ├── DependencyInjection/
+│   │   │   ├── Extensions
+│   │   │   └── Options
+│   │   ├── Idempotence/
+│   │   │   └── IdempotentDomainEventHandler.cs
+│   │   ├── ProjectionDbContext.cs
+│   │   └── ProjectionGateway.cs --> Repository
+│   ├
+│   ├── Presentation  --> 'Define api using apicontroller or minimalapi(recommand but will hard maintanin)' /
+│   │   ├── (ref: Application-Infrastructure)
+│   │   └── Folders/
+│   │       ├── Abstractions/
+│   │       │   ├── ApiController.cs
+│   │       │   └── ApplicationApi.cs
+│   │       ├── Controllers/
+│   │       │   ├── V1
+│   │       │   ├── V2
+│   │       │   └── ...
+│   │       ├── APIs/
+│   │       │   ├── Accounts => Asp.Versioning.Builder =>> HasApiVersion
+│   │       │   ├── Catalogs => Asp.Versioning.Builder =>> HasApiVersion
+│   │       │   ├── Communications => Asp.Versioning.Builder =>> HasApiVersion
+│   │       │   ├── Identities => Asp.Versioning.Builder =>> HasApiVersion
+│   │       │   ├── Orders => Asp.Versioning.Builder =>> HasApiVersion
+│   │       │   ├── Payments => Asp.Versioning.Builder =>> HasApiVersion
+│   │       │   ├── ShoppingCarts => Asp.Versioning.Builder =>> HasApiVersion
+│   │       │   └── Warehouses => Asp.Versioning.Builder =>> HasApiVersion
+│   │       └── DependencyInjection/
+│   │           ├── Extensions
+│   │           └── Options
+│   ├
+│   └── Contract --> 'Defined common for project'/
+│       └── Folders/
+│           ├── Abstractions
+│           ├── DataTransferObjects
+│           ├── Enumerations
+│           ├── JsonConverters
+│           ├── Shared/
+│           │   ├── Result.cs
+│           │   └── ResultT.cs
+│           └── Services/
+│               ├── Account/
+│               │   ├── Account.proto
+│               │   ├── Command.cs
+│               │   ├── DomainEvent.cs
+│               │   ├── Projection.cs
+│               │   └── Query.cs
+│               ├── Catalog
+│               ├── Communication
+│               ├── Identity
+│               ├── Order
+│               ├── Payment
+│               ├── ShoppingCart
+│               └── Warehouse
+├
+└── test --> 'Unit test' /
+    ├── Architecture.Tests
+    ├── API.Tests
+    ├── Application.Tests
+    ├── Domain.Tests
+    ├── Infrastructure.Tests
+    ├── Persistance.Tests
+    └── Presentation.Tests
+	
+	
+	
+	

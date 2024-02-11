@@ -2,18 +2,20 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PNN.File.Databases;
 
 #nullable disable
 
-namespace MediaFile.Databases.Migrations
+namespace PNN.File.Databases.Migrations
 {
     [DbContext(typeof(MediaFileDbContext))]
-    partial class MediaFileDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240131155016_update_folder_tb")]
+    partial class update_folder_tb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

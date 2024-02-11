@@ -114,13 +114,15 @@ public class MediaController : ControllerBase
 
         for (int i = 0; i < numFiles; i++)
         {
+            // check exist path 
+
 
             var uploadFile = Request.Form.Files[i];
             var fileName = uploadFile.FileName;
             var filePath = _mediaService.CombinePaths(path, fileName);
             try
             {
-
+                
                 var extension = Path.GetExtension(fileName).TrimStart('.').ToLower();
 
                 if (typeFilter != null && typeFilter.Length > 0)

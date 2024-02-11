@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -23,7 +23,6 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\MediaFile\PNN.File.csproj" />
 	  <ProjectReference Include="..\PNN.File\PNN.File.csproj" />
 	  <ProjectReference Include="..\PNN.Identity\PNN.Identity.csproj" />
 	</ItemGroup>
