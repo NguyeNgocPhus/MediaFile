@@ -41,6 +41,6 @@ public class MediaFileInfo
     public DateTimeOffset LastModified => File.UpdatedAt;
     public long Length => File.Size;
     public string Name => File.Name;
-    string PhysicalPath => Path;
+    public string PhysicalPath => Path;
 
 }

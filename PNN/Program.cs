@@ -15,11 +15,12 @@ builder.Services.AddSimpleIdentity(builder.Configuration);
 var appDb = builder.Configuration.GetSection("AppDb").Get<AppDbOption>();
 builder.Services.AddPooledDbContextFactory<MediaFileDbContext>(option =>
 {
-    option.UseNpgsql($"Server={appDb.Server};Port={appDb.Port};User Id={appDb.UserName};Password={appDb.Password};Database={appDb.Database}");
+    option.UseNpgsql(
+        $"Server={appDb.Server};Port={appDb.Port};User Id={appDb.UserName};Password={appDb.Password};Database={appDb.Database}");
     option.UseLoggerFactory(LoggerFactory.Create(loggingBuilder =>
-    {
-        loggingBuilder.AddConsole();
-    }
+        {
+            loggingBuilder.AddConsole();
+        }
     ));
 });
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
